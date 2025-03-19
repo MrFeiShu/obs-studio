@@ -5066,6 +5066,7 @@ static float get_source_volume(obs_source_t *source, uint64_t os_time)
 
 static inline void multiply_output_audio(obs_source_t *source, size_t mix, size_t channels, float vol)
 {
+	// feishu resister 修饰符，告诉编译器，这个变量可能会被频繁访问，建议放在寄存器中
 	register float *out = source->audio_output_buf[mix][0];
 	register float *end = out + AUDIO_OUTPUT_FRAMES * channels;
 
@@ -5173,7 +5174,7 @@ static void apply_audio_volume(obs_source_t *source, uint32_t mixers, size_t cha
 	vol = get_source_volume(source, source->audio_ts);
 	if (vol == 1.0f)
 		return;
-
+	// feishu 音量为0或者没有混音器，直接清零
 	if (vol == 0.0f || mixers == 0) {
 		memset(source->audio_output_buf[0][0], 0,
 		       AUDIO_OUTPUT_FRAMES * sizeof(float) * MAX_AUDIO_CHANNELS * MAX_AUDIO_MIXES);
@@ -5193,16 +5194,19 @@ static void custom_audio_render(obs_source_t *source, uint32_t mixers, size_t ch
 	bool success;
 	uint64_t ts;
 
+	// feishu 枚举混音器
 	for (size_t mix = 0; mix < MAX_AUDIO_MIXES; mix++) {
+		// feishu 枚举通道，并将数据拷贝到 audio_data 中
 		for (size_t ch = 0; ch < channels; ch++) {
 			audio_data.output[mix].data[ch] = source->audio_output_buf[mix][ch];
 		}
-
+		// feishu 匹配输入和输出的音频混音器，输入和输出都有才保留数据，否则需要将audio_output_buf[mix]清零
 		if ((source->audio_mixers & mixers & (1 << mix)) != 0) {
 			memset(source->audio_output_buf[mix][0], 0, sizeof(float) * AUDIO_OUTPUT_FRAMES * channels);
 		}
 	}
 
+	// feishu 调用插件提供的渲染接口
 	success = source->info.audio_render(source->context.data, &ts, &audio_data, mixers, channels, sample_rate);
 	source->audio_ts = success ? ts : 0;
 	source->audio_pending = !success;
@@ -5210,12 +5214,13 @@ static void custom_audio_render(obs_source_t *source, uint32_t mixers, size_t ch
 	if (!success || !source->audio_ts || !mixers)
 		return;
 
+	// feishu 再次将没有配置的音频混音器的数据清零；输出配置了某个混音器，但是输入不支持该混音器，则清空输出数据对应混音器数据
 	for (size_t mix = 0; mix < MAX_AUDIO_MIXES; mix++) {
 		uint32_t mix_bit = 1 << mix;
-
+		// feishu 输出没有该混音器，跳过
 		if ((mixers & mix_bit) == 0)
 			continue;
-
+		// feishu 输入没有该混音器，清空输出数据中该混音器数据
 		if ((source->audio_mixers & mix_bit) == 0) {
 			memset(source->audio_output_buf[mix][0], 0, sizeof(float) * AUDIO_OUTPUT_FRAMES * channels);
 		}
@@ -5311,6 +5316,7 @@ void obs_source_audio_render(obs_source_t *source, uint32_t mixers, size_t chann
 		return;
 	}
 
+	// feishu 调用插件提供的渲染接口
 	if (source->info.audio_render) {
 		if (!source->context.data) {
 			source->audio_pending = true;

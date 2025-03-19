@@ -121,7 +121,7 @@ static inline void do_audio_output(struct audio_output *audio, size_t mix_idx, u
 
 		data.frames = frames;
 		data.timestamp = timestamp;
-
+		// feishu 重新采样后输出音频数据
 		if (resample_audio_output(input, &data))
 			input->callback(input->param, mix_idx, &data);
 	}
@@ -299,7 +299,7 @@ bool audio_output_connect(audio_t *audio, size_t mi, const struct audio_convert_
 	if (audio_get_input_idx(audio, mi, callback, param) == DARRAY_INVALID) {
 		struct audio_mix *mix = &audio->mixes[mi];
 		struct audio_input input = {
-			.callback = callback,
+			.callback = callback,// feishu 设置输出音频数据的回调函数
 			.param = param,
 		};
 

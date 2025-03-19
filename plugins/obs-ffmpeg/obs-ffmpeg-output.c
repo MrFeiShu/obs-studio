@@ -1144,6 +1144,6 @@ struct obs_output_info ffmpeg_output = {
 	.start = ffmpeg_output_start,
 	.stop = ffmpeg_output_stop,
 	.raw_video = receive_video,
-	.raw_audio2 = receive_audio,
+	.raw_audio2 = receive_audio, // feishu 处理音频输出数据的回调接口之一
 	.get_total_bytes = ffmpeg_output_total_bytes,
 };
