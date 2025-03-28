@@ -1297,6 +1297,7 @@ bool OBSApp::OBSInit()
 	mainWindow->setAttribute(Qt::WA_DeleteOnClose, true);
 	connect(mainWindow, &OBSBasic::destroyed, this, &OBSApp::quit);
 
+	// feishu OBS 窗口init
 	mainWindow->OBSInit();
 
 	connect(this, &QGuiApplication::applicationStateChanged,
@@ -2093,7 +2094,7 @@ static int run_program(fstream &logFile, int argc, char *argv[])
 			}
 			blog(LOG_INFO, "Command Line Arguments: %s", stor.str().c_str());
 		}
-
+		// feishu OBS init
 		if (!program.OBSInit())
 			return 0;
 
@@ -2449,6 +2450,7 @@ static bool vc_runtime_outdated()
 }
 #endif
 
+// feishu OBS客户端程序入口函数
 int main(int argc, char *argv[])
 {
 #ifndef _WIN32
@@ -2636,6 +2638,7 @@ int main(int argc, char *argv[])
 	fstream logFile;
 
 	curl_global_init(CURL_GLOBAL_ALL);
+	// feishu run_program函数是OBS客户端程序入口函数
 	int ret = run_program(logFile, argc, argv);
 
 #ifdef _WIN32

@@ -227,7 +227,7 @@ static void *audio_thread(void *param)
 		os_sleepto_ns_fast(audio_time);
 
 		profile_start(audio_thread_name);
-
+		// feishu 实际处理音频输入输出的函数
 		input_and_output(audio, audio_time, prev_time);
 		prev_time = audio_time;
 
@@ -373,6 +373,7 @@ int audio_output_open(audio_t **audio, struct audio_output_info *info)
 		goto fail0;
 	if (os_event_init(&out->stop_event, OS_EVENT_TYPE_MANUAL) != 0)
 		goto fail1;
+	// feishu 创建音频线程
 	if (pthread_create(&out->thread, NULL, audio_thread, out) != 0)
 		goto fail2;
 

@@ -1539,6 +1539,7 @@ bool obs_reset_audio2(const struct obs_audio_info2 *oai)
 	ai.samples_per_sec = oai->samples_per_sec;
 	ai.format = AUDIO_FORMAT_FLOAT_PLANAR;
 	ai.speakers = oai->speakers;
+	// feishu 设置audio输入回调函数
 	ai.input_callback = audio_callback;
 
 	blog(LOG_INFO, "---------------------------------");

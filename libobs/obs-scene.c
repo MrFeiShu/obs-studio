@@ -1839,7 +1839,7 @@ static inline obs_scene_t *create_private_id(const char *id, const char *name)
 	struct obs_source *source = obs_source_create_private(id, name, NULL);
 	return source->context.data;
 }
-
+// feishu 创建场景
 obs_scene_t *obs_scene_create(const char *name)
 {
 	return create_id("scene", name);
@@ -2414,7 +2414,7 @@ release_source_and_fail:
 	obs_source_release(source);
 	return NULL;
 }
-
+// feishu 给场景添加场景项，场景项就是一个源。场景项是场景的子元素，可以是视频、音频、图像、文本等源。
 obs_sceneitem_t *obs_scene_add(obs_scene_t *scene, obs_source_t *source)
 {
 	obs_sceneitem_t *item = obs_scene_add_internal(scene, source, NULL, 0);

@@ -914,7 +914,7 @@ static void LoadAudioDevice(const char *name, int channel, obs_data_t *parent)
 	OBSSourceAutoRelease source = obs_load_source(data);
 	if (!source)
 		return;
-
+	// feishu 添加音频源
 	obs_set_output_source(channel, source);
 
 	const char *source_name = obs_source_get_name(source);
@@ -2056,11 +2056,14 @@ void OBSBasic::OBSInit()
 
 	if (!InitBasicConfig())
 		throw "Failed to load basic.ini";
+
+	// feishu 初始化audio
 	if (!ResetAudio())
 		throw "Failed to initialize audio";
 
 	int ret = 0;
 
+	// feishu 初始化video
 	ret = ResetVideo();
 
 	switch (ret) {
@@ -2085,6 +2088,7 @@ void OBSBasic::OBSInit()
 		blog(LOG_INFO, "Audio monitoring device:\n\tname: %s\n\tid: %s", device_name, device_id);
 	}
 
+	// feishu 初始化回调函数
 	InitOBSCallbacks();
 	InitHotkeys();
 	ui->preview->Init();
